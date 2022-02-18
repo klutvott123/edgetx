@@ -21,28 +21,6 @@
 
 #include "opentx.h"
 
-uint8_t createGhostMenuControlFrame(uint8_t * frame, int16_t * pulses)
-{
-  uint8_t * buf = frame;
-
-  *buf++ = getGhostModuleAddr();            // addr
-  *buf++ = GHST_UL_RC_CHANS_SIZE;           // length
-  const uint8_t * crc_start = buf;
-  *buf++ = GHST_UL_MENU_CTRL;               // type
-
-  // payload
-  *buf++ = reusableBuffer.ghostMenu.buttonAction; // Joystick states, Up, Down, Left, Right, Press
-  *buf++ = reusableBuffer.ghostMenu.menuAction;   // menu control, open, close, etc.
-  for (uint8_t i = 0; i < 8; i++) {
-    *buf++ = 0;   // padding to make this the same size as the pulses packet
-  }
-
-  // crc
-  *buf++ = crc8(crc_start, GHST_UL_RC_CHANS_SIZE - 1);
-
-  return buf - frame;
-}
-
 // Range for pulses (channels output) is [-1024:+1024]
 uint8_t createGhostChannelsFrame(uint8_t * frame, int16_t * pulses, bool raw12bits)
 {
@@ -132,11 +110,8 @@ void setupPulsesGhost()
       outputTelemetryBuffer.reset();
     } else
     #endif
-    if (moduleState[EXTERNAL_MODULE].counter == GHST_MENU_CONTROL) {
-        p_data->length = createGhostMenuControlFrame(p_data->pulses, &channelOutputs[module.channelsStart]);
-    } else {
+    {
         p_data->length = createGhostChannelsFrame(p_data->pulses, &channelOutputs[module.channelsStart], module.ghost.raw12bits);
     }
-    moduleState[EXTERNAL_MODULE].counter = GHST_FRAME_CHANNEL;
   }
 }

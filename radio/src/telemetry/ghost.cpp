@@ -242,29 +242,6 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValueString(sensor, vtxBandString);
       break;
     }
-
-    case GHST_DL_MENU_DESC:
-    {
-      GhostMenuFrame * packet;
-      GhostMenuData * lineData;
-      packet = (GhostMenuFrame * ) telemetryRxBuffer;
-      lineData = (GhostMenuData *) &reusableBuffer.ghostMenu.line[packet->lineIndex];
-      lineData->splitLine = 0;
-      reusableBuffer.ghostMenu.menuStatus = packet->menuStatus;
-      lineData->lineFlags = packet->lineFlags;
-      for (uint8_t i = 0; i < GHST_MENU_CHARS; i++) {
-        if (packet->menuText[i] == 0x7C) {
-          lineData->menuText[i] = '\0';
-          lineData->splitLine = i + 1;
-        }
-        else {
-          lineData->menuText[i] = packet->menuText[i];
-        }
-      }
-      lineData->menuText[GHST_MENU_CHARS] = '\0';
-      break;
-    }
-
     case GHST_DL_PACK_STAT: {
 #if defined(BLUETOOTH)
       if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {

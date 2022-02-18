@@ -113,10 +113,6 @@ if(MULTIMODULE)
   add_gui_src(multi_rfprotos.cpp)
 endif()
 
-if(GHOST)
-  add_gui_src(radio_ghost_module_config.cpp)
-endif()
-
 set(SRC ${SRC} storage/modelslist.cpp)
 
 option(WINDOWS_INSPECT_BORDERS "Draw bounding boxes around windows" OFF)

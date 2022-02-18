@@ -22,7 +22,6 @@
 #include <algorithm>
 #include "radio_tools.h"
 #include "radio_spectrum_analyser.h"
-#include "radio_ghost_module_config.h"
 #include "opentx.h"
 #include "libopenui.h"
 #include "lua/lua_api.h"
@@ -358,32 +357,6 @@ void RadioToolsPage::rebuild(FormWindow * window)
     grid.nextLine();
   }
 #endif
-#endif
-
-#if defined(GHOST)
-  if (isModuleGhost(EXTERNAL_MODULE)) {
-    auto txt = new StaticText(window, grid.getLabelSlot(), "ghost",
-                              BUTTON_BACKGROUND, CENTERED | VCENTERED);
-    auto b = new TextButton(
-        window, grid.getFieldSlot(1), "Ghost module config",
-        [=]() -> uint8_t {
-          new RadioGhostModuleConfig(EXTERNAL_MODULE);
-          return 0;
-        },
-        OPAQUE);
-    b->setBgColorHandler([=]() -> LcdFlags { return COLOR_THEME_PRIMARY2; });
-    b->setFocusHandler([=](bool focus) {
-      if (focus) {
-        txt->setBackgroundColor(COLOR_THEME_FOCUS);
-        txt->setTextFlags(COLOR_THEME_PRIMARY2 | CENTERED | VCENTERED);
-      } else {
-        txt->setBackgroundColor(COLOR_THEME_SECONDARY2);
-        txt->setTextFlags(COLOR_THEME_PRIMARY1 | CENTERED | VCENTERED);
-      }
-      txt->invalidate();
-    });
-    grid.nextLine();
-  }
 #endif
 
   window->setInnerHeight(grid.getWindowHeight());
